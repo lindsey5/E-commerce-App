@@ -9,10 +9,11 @@ const monthLabels = [
 
 const MonthlySales = () => {
     const [sales, setSales] = useState([])
+    const [year, setYear] = useState(new Date().getFullYear())
 
     useEffect(() => {
         const fetchMonthlySales = async () => {
-            const response = await fetchData('/api/order/sales/monthly'); 
+            const response = await fetchData(`/api/order/sales/monthly?year=${year}`); 
             if(response.success){
                 const monthlySales = response.monthlySales;
                 const formattedData = monthLabels.map((label, index) => ({
@@ -28,7 +29,11 @@ const MonthlySales = () => {
         fetchMonthlySales();
     }, []);
 
-    return <div className='bg-white shadow-md shadow-gray-300 rounded-md mt-20'>
+    return <div className='bg-white shadow-md shadow-gray-300 rounded-md mt-10 p-5'>
+        <select className="outline-none" onChange={(e) => setYear(e.target.value)} value={year}>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+        </select>
         <BarChart
             dataset={sales}
             xAxis={[{ dataKey: 'month' }]}

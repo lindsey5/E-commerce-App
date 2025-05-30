@@ -6,7 +6,7 @@ import TotalProducts from "../components/dashboard/TotalProducts";
 
 const Dashboard = () => {
 
-    return <main className="p-10 bg-gray-100 min-h-full">
+    return <main className="p-10 bg-gray-100">
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <div className="w-full flex gap-5 grid grid-cols-4 mt-5">
             <SalesToday />

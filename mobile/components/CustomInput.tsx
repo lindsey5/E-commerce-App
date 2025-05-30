@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { TextInput, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import { TextInput, StyleSheet, StyleProp, TextStyle } from "react-native";
 import { TextInputProps } from "react-native-paper";
 
 interface CustomInputProps extends TextInputProps {
   placeholder: string;
-  style?: StyleProp<ViewStyle>;
+  style?: StyleProp<TextStyle>;
 }
 
 const CustomInput = ({ placeholder, style, ...props }: CustomInputProps) => {

@@ -147,7 +147,7 @@ export const update_order_status = async (req, res) => {
 
 export const get_pending_orders = async (req, res) => {
     try{
-        const total = await Order.countDocuments({ status: 'Pending' })
+        const total = await Order.countDocuments({ status: { $in: ['Pending', 'Confirmed', 'Shipped']} })
 
         res.status(200).json({success: true, total });
         
