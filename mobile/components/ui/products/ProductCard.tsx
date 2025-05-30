@@ -7,10 +7,11 @@ interface Card {
     image: string;
     productName: string;
     price: number;
+    rating: number;
     style?: ViewStyle
 }
 
-const ProductCard = ({ id, productName, image, price, style }: Card) => {
+const ProductCard = ({ id, productName, image, price, style, rating }: Card) => {
     const router = useRouter();
 
     const goToProduct = () => {
@@ -28,7 +29,7 @@ const ProductCard = ({ id, productName, image, price, style }: Card) => {
                         name={'star'} 
                         color={'#9137db'} 
                     />
-                    <Text style={{ fontSize: 12}}>4/5</Text>
+                    {rating !== 0 && <Text style={{ fontSize: 12}}>{rating.toFixed(1)}</Text>}
                 </View>
                 <Text style={styles.price}>₱ {price.toFixed(2)}</Text>
             </View>

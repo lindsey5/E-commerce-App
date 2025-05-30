@@ -15,13 +15,17 @@ const WebViewScreen = () => {
     socket.on("order-paid", async (data) => {
       const { user, address, items, paymentIntentId } = data
         for(const item of items){
+          console.log(item)
           await postData('/api/order', {
             firstname: user.firstname,
             lastname: user.lastname,
             address: address.address,
             zip: address.zip,
             city: address.city,
+            product: item.product_id,
             item: item.item_id,
+            size: item.size,
+            color: item.color,
             quantity: item.quantity,
             price: item.price,
             paymentIntentId

@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
-import { View, StyleSheet, ActivityIndicator, TouchableOpacity, Text} from "react-native";
+import { useEffect, useState } from "react";
+import { View, StyleSheet,  TouchableOpacity, Text} from "react-native";
 import { fetchData } from "../../../services/api";
 import ProductCard from "./ProductCard";
-import { getToken } from "../../../services/auth";
 
 const Products = ({ searchTerm }) => {
   const [products, setProducts] = useState([]);
@@ -22,8 +21,8 @@ const Products = ({ searchTerm }) => {
     fetchProducts();
   }, [searchTerm]);
 
-  if(products.length === 0) return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator size="large" color="#9137db" />
+  if(products.length === 0 && searchTerm) return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text>No results for {searchTerm}</Text>
   </View>
 
   return (
@@ -35,6 +34,7 @@ const Products = ({ searchTerm }) => {
             key={product.name}
             id={product._id}
             image={product.image}
+            rating={product.rating}
             productName={product.name}
             price={Math.min(...product.items.map((item) => item.price))}
             style={{ minHeight: 250, width: "48%" }}

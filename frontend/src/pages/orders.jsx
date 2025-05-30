@@ -67,10 +67,10 @@ const Orders = () => {
                         <StyledTableCell align="left">{order.order_id}</StyledTableCell>
                         <StyledTableCell align="left">{order.firstname} {order.lastname}</StyledTableCell>
                         <StyledTableCell align="center">{order.status}</StyledTableCell>
-                        <StyledTableCell align="center">{order.item.product.name}</StyledTableCell>
-                        <StyledTableCell align="center">{order.item.sku}</StyledTableCell>
-                        <StyledTableCell align="center">{order.item.size}</StyledTableCell>
-                        <StyledTableCell align="center">{order.item.color}</StyledTableCell>
+                        <StyledTableCell align="center">{order.product.name}</StyledTableCell>
+                        <StyledTableCell align="center">{order?.item.sku}</StyledTableCell>
+                        <StyledTableCell align="center">{order.size}</StyledTableCell>
+                        <StyledTableCell align="center">{order.color}</StyledTableCell>
                         <StyledTableCell align="center">{order.address}</StyledTableCell>
                         <StyledTableCell align="center">{order.zip}</StyledTableCell>
                         <StyledTableCell align="center">{order.city}</StyledTableCell>

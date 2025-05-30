@@ -31,9 +31,22 @@ const OrderSchema = new Schema({
         type: String,
         required: true
     },
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+        required: true,
+    },
     item: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Item',
+        required: true,
+    },
+    size: {
+        type: String,
+        required: true
+    },
+    color: {
+        type: String,
         required: true,
     },
     quantity: {
@@ -53,8 +66,9 @@ const OrderSchema = new Schema({
         type: String,
         required: true,
     },
-    deliveredAt: {
-        type: Date
+    estimated_delivery: {
+        type: Date,
+        required: true
     }
 }, { timestamps: true })
 

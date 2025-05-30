@@ -1,6 +1,9 @@
 import Product from '../models/product.js'
 import Item from '../models/item.js';
 import errorHandler from '../utils/errorHandler.js';
+import Cart from '../models/cart.js';
+import Order from '../models/order.js';
+import Rating from '../models/rating.js';
 
 export const create_product = async (req, res) => {
     try{
@@ -19,19 +22,52 @@ export const create_product = async (req, res) => {
 }
 
 export const get_product = async (req, res) => {
-    const { id } = req.params;
-    try{
-        const product = await Product.findOne({ _id: id, status: 'Available'});
-        if(!product) return res.status(404).json({ success: false, message: "Product not found."})
-        
-        const items = await Item.find({ product: id});
+  const { id } = req.params;
+  try {
+    const product = await Product.findOne({ _id: id, status: 'Available' });
+    if (!product) return res.status(404).json({ success: false, message: "Product not found." });
 
-        return res.status(200).json({ success: true, product: { ...product.toObject(), items}});
-    }catch(err){
+    const items = await Item.find({ product: id });
+
+    // Wait for all order count adjustments
+    const updatedItems = await Promise.all(
+      items.map(async (item) => {
+        const orderCount = await Order.countDocuments({
+          item: item._id,
+          status: { $nin: ['Completed', 'Cancelled'] },
+        });
+
+        const itemObj = item.toObject();
+        itemObj.stock -= orderCount;
+        return itemObj;
+      })
+    );
+
+    return res.status(200).json({
+      success: true,
+      product: {
+        ...product.toObject(),
+        items: updatedItems,
+      },
+    });
+  } catch (err) {
+    const errors = errorHandler(err);
+    res.status(500).json({ success: false, errors });
+  }
+};
+
+export const total_products = async (req, res) => {
+    try{
+        const total = await Product.countDocuments();
+
+        return res.status(200).json({success: true, total})
+
+    } catch (err) {
         const errors = errorHandler(err);
-        res.status(500).json({success: false, errors});
+        res.status(500).json({ success: false, errors });
     }
 }
+
 
 export const get_products = async (req, res) => {
     try{
@@ -55,9 +91,14 @@ export const get_products = async (req, res) => {
 
         const productsWithStock = (await Promise.all(
             products.map(async (product) => {
-                const items = await Item.find({ product: product.id });
+                const items = await Item.find({ product: product._id });
+                const productRatings = await Rating.find({ product: product._id})
+
+                const rating = productRatings.length > 0
+                    ? productRatings.reduce((sum, r) => sum + r.rating, 0) / productRatings.length
+                    : 0;
                 const stock = items.reduce((total, item) => total + item.stock, 0);
-                return { ...product.toObject(), stock, items };
+                return { ...product.toObject(), stock, items, rating };
             })
         ))
 
@@ -109,6 +150,7 @@ export const delete_product = async (req, res) => {
 
         product.status = 'Deleted';
         const updatedProduct = await product.save();
+        await Cart.deleteMany({ product: product._id});
 
         res.status(200).json({ success: true, product: updatedProduct });
         

@@ -12,6 +12,7 @@ import itemRoutes from './routes/itemRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import cartRoutes from './routes/cartRoute.js';
 import orderRoutes from './routes/orderRoutes.js';
+import ratingRoutes from './routes/ratingRoutes.js';
 import { paymongoWebhook } from './middleware/paymongo.js';
 import { initializeSocket } from './middleware/socket.js';
 
@@ -59,6 +60,7 @@ app.use('/api/item', itemRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/order', orderRoutes);
+app.use('/api/rating', ratingRoutes);
 
 app.post('/webhook/paymongo', paymongoWebhook);
 

@@ -30,7 +30,7 @@ export default function RootLayout() {
   const getOrdersAsync = async() => {
     const response = await fetchData('/api/order/user')
 
-    if(response.success)  setOrders(response.orders.length)
+    if(response.success)  setOrders(response.orders.filter(order => order.status === 'Pending').length)
   }
 
   return (<Tabs

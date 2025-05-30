@@ -34,10 +34,10 @@ const EditOrder = ({ order, handleClose}) => {
             </div>
             <div className="border-b-1 border-gray-300 py-5">
                 <div className="flex w-full gap-3">
-                    <img className="w-20 h-20" src={order?.item.product.image}/>
+                    <img className="w-20 h-20" src={order?.product.image}/>
                     <div className="flex-1 flex flex-col gap-3">
-                        <h1 className="font-bold text-xl">{order?.item.product.name}</h1>
-                        <p>{order?.item.color} | {order?.item.size}</p>
+                        <h1 className="font-bold text-xl">{order?.product.name}</h1>
+                        <p>{order?.color} | {order?.size}</p>
                         <div className="flex w-full justify-between">
                             <p>Quantity: {order?.quantity}</p>
                             <p>₱{order?.price}</p>

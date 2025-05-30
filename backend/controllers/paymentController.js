@@ -13,6 +13,9 @@ export const createPaymentCheckout = async (req, res) => {
           quantity: item.quantity }
         ))
 
+        console.log
+        (items)
+
         const options = {
             method: 'POST',
             headers: {

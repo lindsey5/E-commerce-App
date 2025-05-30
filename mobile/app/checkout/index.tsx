@@ -5,7 +5,6 @@ import { fetchData, postData, updateData } from "../../services/api";
 import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import ThemedButton from "../../components/ThemedButton";
-import useSocket from "../../hooks/useSocket";
 
 interface DetailInputProps extends TextInputProps{
     label: string,

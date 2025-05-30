@@ -1,3 +1,4 @@
+import Cart from '../models/cart.js';
 import Item from '../models/item.js';
 import errorHandler from '../utils/errorHandler.js';
 
@@ -68,3 +69,26 @@ export const get_items = async (req, res) => {
         res.status(500).json({success: false, errors});
     }
 }
+
+export const delete_item = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const item = await Item.findById(id);
+        if (!item) {
+            return res.status(404).json({ success: false, message: "Item not found" });
+        }
+
+        // Delete the item
+        await item.deleteOne();
+
+        // Remove all cart entries related to this item
+        await Cart.deleteMany({ item: id });
+
+        res.status(200).json({ success: true, message: 'Item and related cart entries successfully deleted' });
+    } catch (err) {
+        console.log(err);
+        const errors = errorHandler(err);
+        res.status(500).json({ success: false, errors });
+    }
+};

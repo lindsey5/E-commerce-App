@@ -71,6 +71,15 @@ const ProductItems = () => {
         }
     } 
 
+    const deleteItem = async (id) => {
+        if(confirm('Are you sure you want to delete?')){
+            const response = await deleteData(`/api/item/${id}`)
+            if(response.success){
+                 window.location.reload()
+            }
+        }
+    }
+
     return <main className="pb-10 bg-gray-100 w-full h-full flex flex-col gap-6 items-center">
             <UpdateProductModal 
                 handleClose={() => setShowEditProduct(false)}
@@ -136,7 +145,7 @@ const ProductItems = () => {
                                     <MoreHorizIcon />
                                 </IconButton>
                                 <IconButton>
-                                    <DeleteIcon />
+                                    <DeleteIcon onClick={() => deleteItem(item._id)}/>
                                 </IconButton>
                             </StyledTableCell>
                         </StyledTableRow>)}

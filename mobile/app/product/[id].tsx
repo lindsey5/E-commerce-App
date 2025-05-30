@@ -12,6 +12,7 @@ import CustomBadge from '../../components/Badge';
 import QuantityCounter from '../../components/ui/QuantityCounter';
 import { getToken } from '../../services/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Ratings from '../../components/ui/rating/Ratings';
 
 export default function ProductDetails() {
   const { id } = useLocalSearchParams();
@@ -62,9 +63,8 @@ export default function ProductDetails() {
     
     if(value){
       await AsyncStorage.setItem("checkout-items", JSON.stringify([{
-        item_id: item._id,
         product_id: product._id,
-        sku: item.sku,
+        item_id: item._id,
         name: product.name,
         quantity,
         price: item.price,
@@ -149,6 +149,9 @@ export default function ProductDetails() {
             ))}
           </View>
         </View>
+        <Ratings 
+          product_id={id.toString()}
+        />
         </ScrollView>
       <View style={{
         backgroundColor: 'white',
@@ -168,7 +171,6 @@ export default function ProductDetails() {
             setQuantity={setQuantity}
           />
         </View>
-
         <View style={{ 
           justifyContent: 'space-between',
           flexDirection: 'row',

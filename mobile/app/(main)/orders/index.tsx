@@ -1,44 +1,19 @@
 import { useCallback, useEffect, useMemo, useState } from "react"
-import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, StyleProp, ScrollView, Image, FlatList, RefreshControl } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image, FlatList, RefreshControl } from "react-native"
 import { fetchData } from "../../../services/api";
-import CustomBadge from "../../../components/Badge";
+import RateModal from "../../../components/ui/rating/RateModal";
+import { router } from "expo-router";
+import { formatDate } from "../../../utils/date";
+import TabButton from "../../../components/ui/TabButton";
 
-interface TabButtonProps {
-  style?: StyleProp<ViewStyle>; 
-  badge: string;    
-  isSelected: boolean;              
-  label: string;                    
-  onPress?: () => void;            
-}
 
-const TabButton: React.FC<TabButtonProps> = ({ style, isSelected, badge, label, onPress }) => {
-  return (
-    <TouchableOpacity 
-      style={[
-        style, 
-        { 
-          backgroundColor: isSelected ? '#9137db' : '#E0E0E0',
-          padding: 10,
-          borderRadius: 10,
-          minWidth: 80
-        }
-      ]}
-      onPress={onPress}
-    >
-        {badge && <CustomBadge text={badge} />}
-        <Text style={{ color: isSelected ? 'white' : '#9137db', textAlign: 'center' }}>
-            {label}
-        </Text>
-    </TouchableOpacity>
-  );
-};
-
-const tabs = ["All", "Pending", "Confirmed", "Shipped", "Completed", "Cancelled"];
+const tabs = ["All", "Pending", "Confirmed", "Shipped", "Completed", "Rated", "Cancelled"];
 
 const Orders = () => {
     const [orders, setOrders] = useState([]);
     const [selectedStatus, setSelectedStatus] = useState<string>('All');
     const [refreshing, setRefreshing] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
 
     const filteredOrders = useMemo(() => {
         if(selectedStatus === 'All')
@@ -65,6 +40,11 @@ const Orders = () => {
     }, []);
 
     return <View style={styles.container}>
+        <RateModal 
+            close={() => setSelectedOrder(null)}
+            modalVisible={selectedOrder !== null}
+            order={selectedOrder}
+        />
         <View style={{backgroundColor: 'white', padding: 20, paddingTop: 20, paddingBottom: 10}}>
             <Text style={styles.title}>My Orders</Text>
 
@@ -94,18 +74,33 @@ const Orders = () => {
             renderItem={({ item }) => (
                 <View key={item._id} style={styles.card}>
                     <View style={{ flexDirection: 'row', gap: 20}}>
-                        <Image style={styles.image} source={{ uri: item.item.product.image }} resizeMode="cover"/>
+                        <Image style={styles.image} source={{ uri: item.product.image }} resizeMode="cover"/>
                     
                         <View style={{flex: 1, flexDirection: 'column', gap: 5}}> 
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 10}}>
-                                <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 5}}>{item.item.product.name}</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 18, marginBottom: 5}}>{item.product.name}</Text>
                                 <Text style={{backgroundColor: '#E0E0E0', padding: 7, borderRadius: 15}}>{item.status}</Text>
                             </View>
-                            <Text>{item.item.color} | {item.item.size}</Text>
+                            <Text>{item.color} | {item.size}</Text>
                             
                             <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
                                 <Text>x{item.quantity}</Text>
-                                <Text>₱{item.item.price}</Text>
+                                <Text>₱{item.price}</Text>
+                            </View>
+
+                            <View style={{flexDirection: 'row', justifyContent: 'space-between', marginTop: 10}}>
+                                {item.status !== 'Rated' && item.status !== 'Completed' && item.status !== 'Cancelled' && <>
+                                <Text>Estimated Delivery:</Text>
+                                <Text>{formatDate(item.estimated_delivery)}</Text>
+                                </>}
+                                {item.status === 'Cancelled' && <>
+                                    <Text>Cancel Date:</Text>
+                                    <Text>{formatDate(item.updatedAt)}</Text>
+                                </>}
+                                {(item.status === 'Rated' || item.status === 'Completed') && <>
+                                    <Text>Delivered at:</Text>
+                                    <Text>{formatDate(item.updatedAt)}</Text>
+                                </>}
                             </View>
 
                             <View style={{ alignItems: 'flex-end', marginTop: 20}}>
@@ -113,7 +108,25 @@ const Orders = () => {
                             </View>
                         </View>
                     </View>
-                    <TouchableOpacity style={{ padding: 10, borderRadius: 10, marginTop: 20}}>
+                    {item.status === 'Completed' && <View
+                        style={{ 
+                            width: '100%', 
+                            flexDirection: 'row',
+                            justifyContent: 'flex-end',
+                            marginTop: 25,
+                        }}
+                    >
+                        <TouchableOpacity
+                            onPress={() => setSelectedOrder(item)}
+                            style={{ paddingHorizontal: 30, paddingVertical: 10, borderRadius: 10, backgroundColor: '#9137db'}}
+                        >
+                            <Text style={{ color: 'white' }}>Rate</Text>
+                        </TouchableOpacity>
+                    </View>}
+                    <TouchableOpacity 
+                        onPress={() => router.push(`/order/${item._id}`)}
+                        style={{ padding: 10, borderRadius: 10, marginTop: 20}}
+                    >
                         <Text style={{ color: '#9137db', textDecorationLine: 'underline'}}>Order details</Text>
                     </TouchableOpacity>
                 </View>
@@ -122,13 +135,6 @@ const Orders = () => {
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
         />
-
-        <ScrollView
-            style={{ width: '100%', padding: 20}} 
-            showsVerticalScrollIndicator={false}
-        >
-
-        </ScrollView>
     </View>
 }
 

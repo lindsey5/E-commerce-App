@@ -3,12 +3,18 @@ import { Ionicons } from "@expo/vector-icons"
 import ThemedText from "../../components/ThemedText"
 import Header from "../../components/ui/partials/header"
 import { useRouter } from "expo-router"
+import { useEffect, useState } from "react"
 
 const OrderPlaced = () => {
     const router = useRouter();
+    const [searchTerm, setSearchTerm] = useState<string>('');
+
+    useEffect(() => {
+        if(searchTerm) router.push('/')
+    }, [searchTerm])
     
     return <View style={styles.container}>
-        <Header />
+        <Header setSearchTerm={setSearchTerm}/>
         <Ionicons size={100} name={"checkmark-circle"} color={'#9137db'} />
         <ThemedText title={true} style={styles.title}>Your Order has been placed</ThemedText>
         <TouchableOpacity style={styles.button} onPress={() => router.replace('/')}>
