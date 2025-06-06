@@ -12,6 +12,7 @@ import Tags from "./pages/tags";
 import { ToastContainer } from "react-toastify";
 import ProductItems from "./pages/productItems";
 import Orders from "./pages/orders";
+import Login from "./pages/login";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
         <Route path="/orders" element={<Orders />}/>
       </Route>
       <Route path="*" element={<Navigate to="/" />} />
+      <Route path="/login" element={<Login />} />
     </>
   )
 );

@@ -50,7 +50,7 @@ const EditOrder = ({ order, handleClose}) => {
                         label="Status"
                         value={status}
                         onChange={handleChange}
-                        items={['Pending', 'Confirmed', 'Shipped', 'Completed', 'Cancelled']}
+                        items={['Pending', 'Confirmed', 'Shipped', 'Completed', 'Rated', 'Cancelled']}
                     />
                     <p className="font-bold">Total Price: {order?.price * order?.quantity}</p>
                 </div>

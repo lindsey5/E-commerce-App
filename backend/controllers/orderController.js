@@ -65,6 +65,7 @@ export const get_orders = async (req, res) => {
         .populate('item')
         .skip(skip)
         .limit(limit);
+        
         const total = await Order.countDocuments();
 
         res.status(200).json({
